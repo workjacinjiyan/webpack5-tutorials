@@ -1,0 +1,6 @@
+.title {
+  /* rgba */
+  color: #12345678;
+  transition: all 0.5s;
+  user-select: none;
+}
