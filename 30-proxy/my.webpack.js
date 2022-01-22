@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { VueLoaderPlugin } = require('vue-loader');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 module.exports = {
   // watch: true,
@@ -17,20 +17,21 @@ module.exports = {
     // 全局配置asset输出,注ext前面的点不需要
     // 但是，如果我们还有字体等资源打包，全局配置全集中在一个地方，需要单独配置
     // assetModuleFilename: 'img/[name].[hash:4][ext]'
-    // 对于在本地通过devServer开启服务，进行资源加载，更多的是关注publicPath
-    // output - publicPath: index.html内部引用路径,默认值就是空字符串:
-    // 规则：hostname + publicPath + filename
-    // publicPath: '',
-    // 若想以file协议的形式（Open in default browser) 打开dist目录下的index.html, 在设置此配置时，要写成'./'而非'/'，这是一个绝对路径（从根目录寻址）与相对路径（从dist目录下寻址）的问题
   },
   // 与browserslistrc的冲突貌似被解决了
   // target: 'web',
   devServer: {
-    hot: true,
-    // contentBase被重命名为static
-    // static: {
-    //   directory: path.resolve(__dirname, 'public'),
-    // },
+    hot: 'only',
+    historyApiFallback: true,
+    port: 6060,
+    open: true,
+    proxy: {
+      '/api': {
+        target: 'https://api.github.com',
+        pathRewrite: { '^/api': '' },
+        changeOrigin: true,
+      },
+    },
   },
   // loader配置项
   module: {
@@ -89,24 +90,8 @@ module.exports = {
         },
       },
       {
-        test: /\.js$/,
-        // use: [
-        //   {
-        //     loader: 'babel-loader',
-        //     options: {
-        //       presets: ['@babel/preset-env'],
-        //       // 若此处有targets:{...}，则browserslist配置被忽略
-        //     },
-        //   },
-        // ],
-        // 防止node_modules包里面使用了新语法等依赖的polyfill与源代码产生冲突
-        exclude: /node_modules/,
+        test: /\.jsx?$/,
         use: ['babel-loader'],
-      },
-      {
-        test: /\.vue$/,
-        // vue-loader 15版本之前，不需要plugin处理，到了15需要了；而16是针对vue3的
-        use: ['vue-loader'],
       },
     ],
   },
@@ -114,7 +99,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     // 不配置自定义选项，默认也有一个ejs模板
     new HtmlWebpackPlugin({
-      title: 'webpack path',
+      title: 'proxy',
       // 模板路径，通常在public文件夹下
       template: './public/index.html',
     }),
@@ -138,7 +123,6 @@ module.exports = {
         },
       ],
     }),
-    // 请确保引入这个插件！
-    new VueLoaderPlugin(),
+    new ReactRefreshWebpackPlugin(),
   ],
 };
