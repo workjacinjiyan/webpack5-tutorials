@@ -6,7 +6,7 @@ import './title';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-import App from './App.jsx';
+import App from './App';
 
 if (module.hot) {
   module.hot.accept(['./title.js'], () => {

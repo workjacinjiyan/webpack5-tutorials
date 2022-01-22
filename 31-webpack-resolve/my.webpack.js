@@ -20,6 +20,12 @@ module.exports = {
   },
   // 与browserslistrc的冲突貌似被解决了
   // target: 'web',
+  resolve: {
+    extensions: ['.json', '.js', '.jsx', '.ts', '.tsx', '.vue'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
   devServer: {
     hot: 'only',
     historyApiFallback: true,

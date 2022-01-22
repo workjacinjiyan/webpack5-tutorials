@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
-import Home from './components/Home.jsx';
-import About from './components/About.jsx';
+import Home from '@/components/Home';
+import About from '@/components/About';
 
 const App = () => {
   const [title, setTitle] = useState('前端');
