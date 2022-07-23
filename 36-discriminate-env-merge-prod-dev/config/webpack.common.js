@@ -1,10 +1,24 @@
 const resolveApp = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { merge } = require('webpack-merge');
+const { DefinePlugin } = require('webpack');
 
 // 导入其他的配置
 const prodConfig = require('./webpack.prod');
 const devConfig = require('./webpack.dev');
+
+module.exports = (env) => {
+  const isProduction = env.production;
+
+  // 为了使babel.config.js配置文件能访问到 process.env.NODE_ENV
+  process.env.NODE_ENV = isProduction ? 'production' : 'development';
+
+  const config = isProduction ? prodConfig : devConfig;
+
+  const mergedConfig = merge(commonConfig, config);
+
+  return mergedConfig;
+};
 
 // 定义对象，保存base配置信息
 const commonConfig = {
@@ -13,11 +27,14 @@ const commonConfig = {
   resolve: {
     extensions: ['.json', '.js', '.jsx', '.ts', '.tsx', '.vue'],
     alias: {
+      // 参考其他教授教的做法，将路径操作单独拎出去生成一个模块
+      // '@': path.resolve(__dirname, '../src')
       '@': resolveApp('./src'),
     },
   },
   output: {
     filename: 'js/main.js',
+    // path: path.resolve(__dirname, '../dist')
     path: resolveApp('./dist'),
     // 全局配置asset输出,注ext前面的点不需要
     // 但是，如果我们还有字体等资源打包，全局配置全集中在一个地方，需要单独配置
@@ -92,14 +109,4 @@ const commonConfig = {
       template: './public/index.html',
     }),
   ],
-};
-
-module.exports = (env) => {
-  const isProduction = env.production;
-
-  const config = isProduction ? prodConfig : devConfig;
-
-  const mergedConfig = merge(commonConfig, config);
-
-  return mergedConfig;
 };

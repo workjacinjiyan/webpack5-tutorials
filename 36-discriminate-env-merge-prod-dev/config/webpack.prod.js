@@ -4,7 +4,9 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   // watch: true,
   mode: 'production',
+  devtool: false,
   plugins: [
+    // 仅用于生产模式
     new CleanWebpackPlugin(),
     // 不配置自定义选项，默认也有一个ejs模板
     new CopyWebpackPlugin({
