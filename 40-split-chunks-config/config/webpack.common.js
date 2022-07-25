@@ -23,30 +23,6 @@ module.exports = (env) => {
 // 定义对象，保存base配置信息
 const commonConfig = {
   entry: {
-    // 方法1
-    // main11111: './src/main1.js',
-    // main22222: './src/main2.js',
-    // 方法2.1
-    // main1: {
-    //   import: './src/main1.js',
-    //   dependOn: 'lodash',
-    // },
-    // main2: {
-    //   import: './src/main2.js',
-    //   dependOn: 'lodash',
-    // },
-    // lodash: 'lodash',
-    // 方法2.2
-    // main1: {
-    //   import: './src/main1.js',
-    //   dependOn: 'shared',
-    // },
-    // main2: {
-    //   import: './src/main2.js',
-    //   dependOn: 'shared',
-    // },
-    // shared: ['lodash', 'jquery'],
-
     index: './src/index.js',
   },
   resolve: {
@@ -58,7 +34,7 @@ const commonConfig = {
     },
   },
   output: {
-    filename: 'js/[name].build.js',
+    filename: 'js/[name].bundle.js',
     // path: path.resolve(__dirname, '../dist')
     path: resolveApp('./dist'),
     // 全局配置asset输出,注ext前面的点不需要
@@ -73,7 +49,16 @@ const commonConfig = {
       }),
     ],
     splitChunks: {
-      chunks: 'all',
+      // 默认 为 async
+      // initial 为 同步
+      // 两者都处理为all，例如react就是all
+      chunks: 'initial',
+      // 拆包的体积条件, 默认值为20KB
+      // minSize: 20000,
+      // maxSize: 20000,
+      // minChunks 最小被引用次数，从而决定是否拆分，
+      // 但是优先级会被minSize和maxSize覆盖
+      minChunks: 1,
     },
   },
   module: {
@@ -140,7 +125,7 @@ const commonConfig = {
   plugins: [
     // 不配置自定义选项，默认也有一个ejs模板
     new HtmlWebpackPlugin({
-      title: 'code-split',
+      title: 'split chunks config',
       // 模板路径，通常在public文件夹下
       template: './public/index.html',
     }),
